@@ -163,7 +163,6 @@
 
     EventListenerHelper.addEventListener = _class.prototype.addEventListener;
     _class.prototype.addEventListener = function(type, listener, options) {
-      debugger;
       var formattedArguments      = EventListenerHelper.getFormattedArguments(type, listener, options);
       var registeredEventListener = EventListenerHelper.getRegisteredEventListener(this, formattedArguments);
 
