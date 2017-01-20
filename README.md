@@ -1,19 +1,48 @@
 ### Polyfill different events classes and methods to match last ES7 specifications
 
-Min IE 10+
+Tested on IE 10+
 
 #### event-constructor-polyfill.js
-Polyfill [CustomEvent](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent), [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) and [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent)
+Polyfill for : [CustomEvent](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent), [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) and [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent)
 
-#### event-listener-options-polyfill.js
-Polyfill EventTarget.prototype.addEventListener and EventTarget.prototype.removeEventListener ```options``` (last parameter which replace useCapture: boolean)
-* [once](https://developers.google.com/web/updates/2016/10/addeventlistener-once)
-* [passive](https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md)
-* capture (which replace useCapture)
+#### event-listener-polyfill.js
+Polyfill for :
+```js
+EventTarget.prototype.addEventListener(type, listener[, options]);
+EventTarget.prototype.removeEventListener(type, listener[, options]);
+```
 
-#### event-listener-types-polyfill.js
---TODO
-Polyfill event types :
-* 'mousewheel', 'DOMMouseScroll' -> 'mousewheel'
-* 'pointerlockchange', 'mozpointerlockchange', 'webkitpointerlockchange' -> 'pointerlockchange'
-* ...
+**type** : name of the event
+
+Polyfill vendor prefixed events like 'pointerlockchange' (try 'pointerlockchange', 'mozpointerlockchange' and 'webkitpointerlockchange') and some *'experimental'* events like 'wheel' (try 'wheel', 'mousewheel', 'DOMMouseScroll')
+Can be disabled (ex: for custom events) with option 'polyfill' set to false.
+
+Polyfilled types :
+```js
+[
+    'wheel',
+    'pointerlockchange', 'pointerlockerror',
+    'fullscreenchange', 'fullscreenerror',
+    'animationend', 'animationiteration', 'animationstart', 'transitionend',
+    'pointercancel', 'pointerdown', 'pointerhover', 'pointermove', 'pointerout', 'pointerover', 'pointerup'
+]
+```
+
+**listener** : the callback
+
+**options** : last parameter which replace boolean useCapture
+* [once](https://developers.google.com/web/updates/2016/10/addeventlistener-once) : trigger only once this event (default: false)
+* [passive](https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md) : allow browser to continue animations (ex: while scrolling) by 'disabling' event.preventDefault() (default: false)
+* capture : replace useCapture (default: false)
+* polyfill : custorm property which tell if vendor properties should be auto prefixed (default: true)
+
+#### Example:
+```js
+document.addEventListener('pointerlockchange', function(event) {
+    console.log('pointerlockchange', event);
+}, { polyfill: true }); // here polyfill: true could be omited because it's the default value
+
+document.addEventListener('click', function() {
+    document.body.requestPointerLock();
+}, { once: true });
+```
