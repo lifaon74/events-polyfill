@@ -1,0 +1,11 @@
+{
+  "name": "events-polyfill",
+  "version": "1.0.0",
+  "description": "Polyfill event : EventListener, EventTarget, CustomEvent, MouseEvent, KeyboardEvent",
+  "main": "event-constructor-polyfill.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "valentin",
+  "license": "ISC"
+}
