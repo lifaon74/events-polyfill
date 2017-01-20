@@ -20,7 +20,10 @@ EventTarget.prototype.removeEventListener(type, listener[, options]);
 **type** : name of the event
 
 Polyfill vendor prefixed events like 'pointerlockchange' (try 'pointerlockchange', 'mozpointerlockchange' and 'webkitpointerlockchange') and some *'experimental'* events like 'wheel' (try 'wheel', 'mousewheel', 'DOMMouseScroll')
-Can be disabled (ex: for custom events) with option 'polyfill' set to false.
+
+* If option 'polyfill' set to false : disable polyfill (ex: for custom events)
+* If option 'polyfill' set to true AND can't be polyfilled : throw an error (allow you to check is event type is supported)
+
 
 Polyfilled types :
 ```js
