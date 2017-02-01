@@ -3,6 +3,7 @@
    * Polyfill creation of custom events
    */
 
+  // ✓, ✗
 
   /**
    * Polyfill CustomEvent
@@ -10,109 +11,122 @@
   try {
     var event = new window.CustomEvent('event', { bubbles: true, cancelable: true });
   } catch (error) {
+    var CustomEventOriginal = window.CustomEvent || window.Event;
     var CustomEvent = function(eventName, params) {
       params = params || {};
-      params.bubbles    = (typeof params.bubbles === 'boolean') ? params.bubbles : false;
-      params.cancelable = (typeof params.cancelable === 'boolean') ? params.cancelable : false;
-      params.detail     = params.detail || {};
-
       var event = document.createEvent('CustomEvent');
       event.initCustomEvent(
         eventName,
-        params.bubbles,
-        params.cancelable,
-        params.detail
+        (params.bubbles === void 0) ? false : params.bubbles,
+        (params.cancelable === void 0) ? false : params.cancelable,
+        (params.detail === void 0) ? {} : params.detail
       );
       return event;
     };
-    CustomEvent.prototype = window.Event.prototype;
+    CustomEvent.prototype = CustomEventOriginal.prototype;
     window.CustomEvent = CustomEvent;
   }
 
 
   /**
-   * Polyfill MouseEvent
+   * Polyfill MouseEvent : https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent
+   *  - screenX ✓
+   *  - screenY ✓
+   *  - clientX ✓
+   *  - clientY ✓
+   *  - ctrlKey ✓
+   *  - shiftKey ✓
+   *  - altKey ✓
+   *  - metaKey ✓
+   *  - button ✓
+   *  - buttons ✓
+   *  - region ✓
    */
   try {
     var event = new window.MouseEvent('event', { bubbles: true, cancelable: true });
   } catch (error) {
+    var MouseEventOriginal = window.MouseEvent || window.Event;
     var MouseEvent = function(eventName, params) {
       params = params || {};
-      params.bubbles    = (typeof params.bubbles === 'boolean') ? params.bubbles : false;
-      params.cancelable = (typeof params.cancelable === 'boolean') ? params.cancelable : false;
-      params.view       = params.view || window;
-      params.detail     = (typeof params.detail === 'number') ? params.detail : 1;
-      params.screenX    = (typeof params.screenX === 'number') ? params.screenX : 0;
-      params.screenY    = (typeof params.screenY === 'number') ? params.screenY : 0;
-      params.clientX    = (typeof params.clientX === 'number') ? params.clientX : 0;
-      params.clientY    = (typeof params.clientY === 'number') ? params.clientY : 0;
-      params.ctrlKey    = (typeof params.clientY === 'boolean') ? params.ctrlKey : false;
-      params.altKey     = (typeof params.altKey === 'boolean') ? params.altKey : false;
-      params.shiftKey   = (typeof params.shiftKey === 'boolean') ? params.shiftKey : false;
-      params.metaKey    = (typeof params.metaKey === 'boolean') ? params.metaKey : false;
-      params.button     = (typeof params.button === 'number') ? params.button : 1;
-
-      params.relatedTarget = params.relatedTarget || null;
-
       var event = document.createEvent('MouseEvent');
+
+      // https://msdn.microsoft.com/en-us/library/ff975292(v=vs.85).aspx
       event.initMouseEvent(
         eventName,
-        params.bubbles,
-        params.cancelable,
-        params.view,
-        params.detail,
-        params.screenX,
-        params.screenY,
-        params.clientX,
-        params.clientY,
-        params.ctrlKey,
-        params.altKey,
-        params.shiftKey,
-        params.metaKey,
-        params.button,
-        params.relatedTarget
+        (params.bubbles === void 0) ? false : params.bubbles,
+        (params.cancelable === void 0) ? false : params.cancelable,
+        (params.view === void 0) ? window : params.view,
+        (params.detail === void 0) ? 0 : params.detail,
+        (params.screenX === void 0) ? 0 : params.screenX,
+        (params.screenY === void 0) ? 0 : params.screenY,
+        (params.clientX === void 0) ? 0 : params.clientX,
+        (params.clientY === void 0) ? 0 : params.clientY,
+        (params.ctrlKey === void 0) ? false : params.ctrlKey,
+        (params.altKey === void 0) ? false : params.altKey,
+        (params.shiftKey === void 0) ? false : params.shiftKey,
+        (params.metaKey === void 0) ? false : params.metaKey,
+        (params.button === void 0) ? 0 : params.button,
+        (params.relatedTarget === void 0) ? null : params.relatedTarget
       );
+
+      event.buttons = (params.buttons === void 0) ? 0 : params.buttons;
+      event.region  = (params.region === void 0) ? null : params.region;
+
       return event;
     };
-    MouseEvent.prototype = window.Event.prototype;
+    MouseEvent.prototype = MouseEventOriginal.prototype;
     window.MouseEvent = MouseEvent;
   }
 
   /**
-   * Polyfill KeyboardEvent
+   * Polyfill KeyboardEvent : https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent
+   *  - key ✓
+   *  - char ✓
+   *  - code ✓
+   *  - location ✓
+   *  - ctrlKey ✓
+   *  - shiftKey ✓
+   *  - altKey ✓
+   *  - metaKey ✓
+   *  - repeat ✓
+   *  - isComposing ✗
+   *  - charCode ✓
+   *  - keyCode ✓
+   *  - which ✓
    */
   try {
     var event = new window.KeyboardEvent('event', { bubbles: true, cancelable: true });
   } catch (error) {
+    var KeyboardEventOriginal = window.KeyboardEvent || window.Event;
     var KeyboardEvent = function(eventName, params) {
       params = params || {};
-      params.bubbles    = (typeof params.bubbles === 'boolean') ? params.bubbles : false;
-      params.cancelable = (typeof params.cancelable === 'boolean') ? params.cancelable : false;
-      params.view       = params.view || window;
-      params.ctrlKey    = (typeof params.clientY === 'boolean') ? params.ctrlKey : false;
-      params.altKey     = (typeof params.altKey === 'boolean') ? params.altKey : false;
-      params.shiftKey   = (typeof params.shiftKey === 'boolean') ? params.shiftKey : false;
-      params.metaKey    = (typeof params.metaKey === 'boolean') ? params.metaKey : false;
-      params.keyCode    = (typeof params.button === 'number') ? params.keyCode : 0;
-      params.charCode   = (typeof params.charCode === 'number') ? params.charCode : 0;
-
-
       var event = document.createEvent('KeyboardEvent');
-      event.iniKeyEvent(
+
+      // https://msdn.microsoft.com/en-us/library/ff975297(v=vs.85).aspx
+      event.initKeyboardEvent(
         eventName,
-        params.bubbles,
-        params.cancelable,
-        params.view,
-        params.ctrlKey,
-        params.altKey,
-        params.shiftKey,
-        params.metaKey,
-        params.keyCode,
-        params.charCode
+        (params.bubbles === void 0) ? false : params.bubbles,
+        (params.cancelable === void 0) ? false : params.cancelable,
+        (params.view === void 0) ? window : params.view,
+        (params.key === void 0) ? '' : params.key,
+        (params.location === void 0) ? 0 : params.location,
+        ((params.ctrlKey === true) ? 'Control ' : '') +
+        ((params.altKey === true) ? 'Alt ' : '') +
+        ((params.shiftKey === true) ? 'Shift ' : '') +
+        ((params.metaKey === true) ? 'Meta ' : ''),
+        (params.repeat === void 0) ? false : params.repeat,
+        (params.locale === void 0) ? navigator.language : params.locale
       );
+
+      event.keyCode   = (params.keyCode === void 0) ? 0 : params.keyCode;
+      event.code      = (params.code === void 0) ? '' : params.code;
+      event.charCode  = (params.charCode === void 0) ? 0 : params.charCode;
+      event.char      = (params.charCode === void 0) ? '' : params.charCode;
+      event.which     = (params.which === void 0) ? 0 : params.which;
+
       return event;
     };
-    KeyboardEvent.prototype = window.Event.prototype;
+    KeyboardEvent.prototype = KeyboardEventOriginal.prototype;
     window.KeyboardEvent = KeyboardEvent;
   }
 })();

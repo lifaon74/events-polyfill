@@ -75,7 +75,8 @@
     } else if((typeof listener === 'object') && (typeof listener.handleEvent === 'function')) {
       return listener.handleEvent;
     } else {
-      throw new Error('Unsupported listener type for addEventListener');
+      return listener;
+      // throw new Error('Unsupported listener type for addEventListener');
     }
   };
 
@@ -158,11 +159,294 @@
   };
 
 
+  EventListenerHelper.polyfillEventTypesName = function(type, target) {
+    var eventTypesPolyfiller = EventListenerHelper.eventTypes[type];
+    if(typeof eventTypesPolyfiller === 'undefined') {
+      return type;
+    } else {
+      var i = 0;
+      for(; i < eventTypesPolyfiller.length; i++) {
+        if(('on' + eventTypesPolyfiller[i]) in target) {
+          return eventTypesPolyfiller[i];
+        }
+      }
 
-  EventListenerHelper.polyfillListener = function(_class) {
+      if(i === eventTypesPolyfiller.length) {
+        throw new Error('Not supported type <' + type + '>');
+      }
+    }
+  };
 
-    EventListenerHelper.addEventListener = _class.prototype.addEventListener;
-    _class.prototype.addEventListener = function(type, listener, options) {
+
+  EventListenerHelper.keyCodes = [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    "Backspace",
+    "Tab",
+    null,
+    null,
+    "Numpad5",
+    "NumpadEnter",
+    null,
+    null,
+    "ShiftLeft",
+    "ControlRight",
+    "AltRight",
+    "Pause",
+    "CapsLock",
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    "Escape",
+    null,
+    null,
+    null,
+    null,
+    "Space",
+    "PageUp",
+    "PageDown",
+    "End",
+    "Home",
+    "ArrowLeft",
+    "ArrowUp",
+    "ArrowRight",
+    "ArrowDown",
+    null,
+    null,
+    null,
+    null,
+    "Insert",
+    "Delete",
+    null,
+    "Digit0",
+    "Digit1",
+    "Digit2",
+    "Digit3",
+    "Digit4",
+    "Digit5",
+    "Digit6",
+    "Digit7",
+    "Digit8",
+    "Digit9",
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    "KeyA",
+    "KeyB",
+    "KeyC",
+    "KeyD",
+    "KeyE",
+    "KeyF",
+    "KeyG",
+    "KeyH",
+    "KeyI",
+    "KeyJ",
+    "KeyK",
+    "KeyL",
+    "KeyM",
+    "KeyN",
+    "KeyO",
+    "KeyP",
+    "KeyQ",
+    "KeyR",
+    "KeyS",
+    "KeyT",
+    "KeyU",
+    "KeyV",
+    "KeyW",
+    "KeyX",
+    "KeyZ",
+    "KeyY",
+    "MetaLeft",
+    "MetaRight",
+    "ContextMenu",
+    null,
+    null,
+    "Numpad0",
+    "Numpad1",
+    "Numpad2",
+    "Numpad3",
+    "Numpad4",
+    "Numpad5",
+    "Numpad6",
+    "Numpad7",
+    "Numpad8",
+    "Numpad9",
+    "NumpadMultiply",
+    "NumpadAdd",
+    null,
+    "NumpadSubtract",
+    "NumpadDecimal",
+    "NumpadDivide",
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6",
+    "F7",
+    "F8",
+    "F9",
+    "F10",
+    "F11",
+    "F12",
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    "NumLock",
+    "ScrollLock",
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    "BracketLeft",
+    null,
+    "Comma",
+    "Slash",
+    "Period",
+    "Backquote",
+    "BracketRight",
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    "Minus",
+    "Quote",
+    "Equal",
+    "Semicolon",
+    "Backslash",
+    null,
+    null,
+    "IntlBackslash"
+  ];
+
+  window.buildKeyCodes = function() {
+    window.addEventListener('keydown', function(event) {
+      if(EventListenerHelper.keyCodes[event.keyCode] && EventListenerHelper.keyCodes[event.keyCode] !== event.code) {
+        console.warn('Detect same keyCode for 2 different codes : ' + event.code + ' (current) vs ' + EventListenerHelper.keyCodes[event.keyCode] + '(old)');
+      }
+      EventListenerHelper.keyCodes[event.keyCode] = event.code;
+      event.preventDefault();
+      event.stopPropagation();
+    });
+  };
+
+  window.endBuildKeyCodes = function() {
+    console.log(JSON.stringify(EventListenerHelper.keyCodes, null, '\t'));
+  };
+
+
+  EventListenerHelper.polyfillEventTypesObject = function(event) {
+   if(event instanceof KeyboardEvent) {
+      if(!('code' in event)) {
+        event.code = EventListenerHelper.keyCodes[event.keyCode];
+      }
+    }
+  };
+
+  EventListenerHelper.polyfilledConstructors = {};
+
+  EventListenerHelper.polyfillListener = function() {
+    EventListenerHelper.polyfillListenerConstructor(EventTarget);
+    if(!(window instanceof EventTarget)) { EventListenerHelper.polyfillListenerConstructor(Window); }
+  };
+
+  EventListenerHelper.polyfillListenerConstructor = function(constructor, name) {
+    var polyfilledConstructor = {
+      name: name,
+      addEventListener: constructor.prototype.addEventListener,
+      removeEventListener:  constructor.prototype.removeEventListener
+    };
+
+    constructor.prototype.addEventListener = function(type, listener, options) {
       var formattedArguments      = EventListenerHelper.getFormattedArguments(type, listener, options);
       var registeredEventListener = EventListenerHelper.getRegisteredEventListener(this, formattedArguments);
 
@@ -171,48 +455,35 @@
         var vendorArguments = {};
 
 
-        vendorArguments.type = formattedArguments.type;
-
-        if(formattedArguments.options.polyfill) {
-          var eventTypesPolyfiller = EventListenerHelper.eventTypes[formattedArguments.type];
-          if(typeof eventTypesPolyfiller !== 'undefined') {
-            var i;
-            for(i = 0; i < eventTypesPolyfiller.length; i++) {
-              if(('on' + eventTypesPolyfiller[i]) in this) {
-                vendorArguments.type = eventTypesPolyfiller[i];
-                break;
-              }
-            }
-
-            if(i === eventTypesPolyfiller.length) {
-              throw new Error('Not supported type <' + type + '>');
-            }
-          }
-        }
+        vendorArguments.type = formattedArguments.options.polyfill ?
+          EventListenerHelper.polyfillEventTypesName(formattedArguments.type) :
+          formattedArguments.type
+        ;
 
         vendorArguments.listener = function(event) {
+            // once
           if(formattedArguments.options.once && !EventListenerHelper.supportedOptions.once) {
             this.removeEventListener(type, listener, options);
           }
 
+            // passive
           if(formattedArguments.options.passive && !EventListenerHelper.supportedOptions.passive) {
             event.preventDefault = function() {
               throw new Error('Unable to preventDefault inside passive event listener invocation.');
             };
           }
 
+            // polyfill
           if(formattedArguments.options.polyfill) {
             event.type = formattedArguments.type;
+            EventListenerHelper.polyfillEventTypesObject(event);
           }
 
           return formattedArguments.listener.call(this, event);
         };
 
-        if(EventListenerHelper.supportedOptions.some) {
-          vendorArguments.options = formattedArguments.options;
-        } else {
-          vendorArguments.options = formattedArguments.options.capture;
-        }
+        vendorArguments.options = EventListenerHelper.supportedOptions.some ?
+          formattedArguments.options : formattedArguments.options.capture;
 
         formattedArguments.vendorArguments = vendorArguments;
 
@@ -220,7 +491,7 @@
 
         EventListenerHelper.registerEventListener(this, formattedArguments);
 
-        EventListenerHelper.addEventListener.call(
+        polyfilledConstructor.addEventListener.call(
           this,
           vendorArguments.type,
           vendorArguments.listener,
@@ -229,24 +500,24 @@
       }
     };
 
-    EventListenerHelper.removeEventListener = _class.prototype.removeEventListener;
-    _class.prototype.removeEventListener = function(type, listener, options) {
+    constructor.prototype.removeEventListener = function(type, listener, options) {
       var formattedArguments      = EventListenerHelper.getFormattedArguments(type, listener, options);
       var registeredEventListener = EventListenerHelper.getRegisteredEventListener(this, formattedArguments);
 
       if(registeredEventListener) {
         EventListenerHelper.unregisterEventListener(this, formattedArguments);
-        EventListenerHelper.removeEventListener.call(
+        polyfilledConstructor.removeEventListener.call(
           this,
           registeredEventListener.vendorArguments.type,
           registeredEventListener.vendorArguments.listener,
           registeredEventListener.vendorArguments.options
         );
       } else {
-        EventListenerHelper.removeEventListener.call(this, type, listener, options);
+        polyfilledConstructor.removeEventListener.call(this, type, listener, options);
       }
-    }
+    };
 
+    EventListenerHelper.polyfilledConstructors[name] = polyfilledConstructor;
   };
 
   /**
@@ -256,11 +527,13 @@
   EventListenerHelper.polyfillAll = function() {
     EventListenerHelper.polyfillEventTarget();
     EventListenerHelper.getSupportedOptions();
-    EventListenerHelper.polyfillListener(EventTarget);
+    EventListenerHelper.polyfillListener();
   };
 
 
   EventListenerHelper.polyfillAll();
+
+  window.EventListenerHelper = EventListenerHelper;
 
   // var div = document.createElement('div');
   // document.body.innerHTML = '';
