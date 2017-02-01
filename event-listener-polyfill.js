@@ -75,8 +75,10 @@
     } else if((typeof listener === 'object') && (typeof listener.handleEvent === 'function')) {
       return listener.handleEvent;
     } else {
-      return listener;
-      // throw new Error('Unsupported listener type for addEventListener');
+      // to support Symbol
+      return function(event) {
+        listener(event);
+      };
     }
   };
 
