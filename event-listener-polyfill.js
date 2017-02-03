@@ -21,7 +21,7 @@
     'animationend', 'animationiteration', 'animationstart', 'transitionend',
     'pointercancel', 'pointerdown', 'pointerhover', 'pointermove', 'pointerout', 'pointerover', 'pointerup'
   ].forEach(function(type) {
-    EventListenerHelper.eventTypes[type] = ['', 'webkit', 'moz', 'ms', 'o']
+    eventTypes[type] = ['', 'webkit', 'moz', 'ms', 'o']
       .map(function(prefix) {
         return prefix + type;
       });
@@ -313,17 +313,17 @@
 
   // window.buildKeyCodes = function() {
   //   window.addEventListener('keydown', function(event) {
-  //     if(EventListenerHelper.keyCodes[event.keyCode] && EventListenerHelper.keyCodes[event.keyCode] !== event.code) {
-  //       console.warn('Detect same keyCode for 2 different codes : ' + event.code + ' (current) vs ' + EventListenerHelper.keyCodes[event.keyCode] + '(old)');
+  //     if(keyCodes[event.keyCode] && keyCodes[event.keyCode] !== event.code) {
+  //       console.warn('Detect same keyCode for 2 different codes : ' + event.code + ' (current) vs ' + keyCodes[event.keyCode] + '(old)');
   //     }
-  //     EventListenerHelper.keyCodes[event.keyCode] = event.code;
+  //     keyCodes[event.keyCode] = event.code;
   //     event.preventDefault();
   //     event.stopPropagation();
   //   });
   // };
   //
   // window.endBuildKeyCodes = function() {
-  //   console.log(JSON.stringify(EventListenerHelper.keyCodes, null, '\t'));
+  //   console.log(JSON.stringify(keyCodes, null, '\t'));
   // };
 
 
