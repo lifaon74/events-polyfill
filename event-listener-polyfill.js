@@ -11,21 +11,41 @@
    * Check supported types
    */
 
+  var prefixes = ['', 'webkit', 'moz', 'ms', 'o'];
+
   var eventTypes = {
-    wheel: ['wheel', 'mousewheel', 'DOMMouseScroll']
+    wheel: ['wheel', 'mousewheel', 'DOMMouseScroll'].map(function(type) {
+      return { type: type, test: testOnEventTypeCallback } ;
+    })
+  };
+
+  var testOnEventTypeCallback = function(target, type) {
+    return (('on' + type) in target);
+  };
+
+  var testTransitionEventTypeCallback = function(target, type) {
+    return testOnEventTypeCallback(target, type) || (target.style['transition'] !== void 0);
   };
 
   [
     'pointerlockchange', 'pointerlockerror',
     'fullscreenchange', 'fullscreenerror',
-    'animationend', 'animationiteration', 'animationstart', 'transitionend',
+    'animationstart', 'animationiteration', 'animationend',
     'pointercancel', 'pointerdown', 'pointerhover', 'pointermove', 'pointerout', 'pointerover', 'pointerup'
   ].forEach(function(type) {
-    eventTypes[type] = ['', 'webkit', 'moz', 'ms', 'o']
+    eventTypes[type] = prefixes
       .map(function(prefix) {
-        return prefix + type;
+        return { type: (prefix + type), test: testOnEventTypeCallback } ;
       });
   });
+
+  ['transitionstart', 'transitionrun', 'transitionend'].forEach(function(type) {
+    eventTypes[type] = prefixes
+      .map(function(prefix) {
+        return { type: (prefix + type), test: testTransitionEventTypeCallback } ;
+      });
+  });
+
 
   var polyfillEventTypesName = function(type, target) {
     var eventTypesPolyfiller = eventTypes[type];
@@ -34,8 +54,8 @@
     } else {
       var i = 0;
       for(; i < eventTypesPolyfiller.length; i++) {
-        if(('on' + eventTypesPolyfiller[i]) in target) {
-          return eventTypesPolyfiller[i];
+        if(eventTypesPolyfiller[i].test(target, type)) {
+          return eventTypesPolyfiller[i].type;
         }
       }
 
@@ -388,7 +408,7 @@
     if(target.__eventListeners === void 0) {
       target.__eventListeners = {};
     }
-    if(arget.__eventListeners[key] === void 0) {
+    if(target.__eventListeners[key] === void 0) {
       target.__eventListeners[key] = [];
     }
     target.__eventListeners[key].push(formattedArguments);
@@ -442,7 +462,7 @@
 
 
         vendorArguments.type = formattedArguments.options.polyfill ?
-          polyfillEventTypesName(formattedArguments.type) :
+          polyfillEventTypesName(formattedArguments.type, this) :
           formattedArguments.type
         ;
 
