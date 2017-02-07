@@ -11,20 +11,20 @@
    * Check supported types
    */
 
-  var prefixes = ['', 'webkit', 'moz', 'ms', 'o'];
-
-  var eventTypes = {
-    wheel: ['wheel', 'mousewheel', 'DOMMouseScroll'].map(function(type) {
-      return { type: type, test: testOnEventTypeCallback } ;
-    })
-  };
-
   var testOnEventTypeCallback = function(target, type) {
     return (('on' + type) in target);
   };
 
   var testTransitionEventTypeCallback = function(target, type) {
     return testOnEventTypeCallback(target, type) || (target.style['transition'] !== void 0);
+  };
+
+  var prefixes = ['', 'webkit', 'moz', 'ms', 'o'];
+
+  var eventTypes = {
+    wheel: ['wheel', 'mousewheel', 'DOMMouseScroll'].map(function(type) {
+      return { type: type, test: testOnEventTypeCallback } ;
+    })
   };
 
   [
