@@ -19,17 +19,38 @@
     return testOnEventTypeCallback(target, type) || (target.style['transition'] !== void 0);
   };
 
+  var testFullScreenEventTypeCallback = function(target, type) {
+    if(testOnEventTypeCallback(target, type)) {
+      return true;
+    } else {
+      if(/^ms/.test(type.toLowerCase())) {
+        return !!document.body.msRequestFullscreen;
+      } else if(/^moz/.test(type)) {
+        return !!document.body.mozRequestFullscreen;
+      } else if(/^webkit/.test(type)) {
+        return !!document.body.webkitRequestFullscreen;
+      } else {
+        return false;
+      }
+    }
+  };
+
   var prefixes = ['', 'webkit', 'moz', 'ms', 'o'];
 
   var eventTypes = {
-    wheel: ['wheel', 'mousewheel', 'DOMMouseScroll'].map(function(type) {
+    'wheel': ['wheel', 'mousewheel', 'DOMMouseScroll'].map(function(type) {
       return { type: type, test: testOnEventTypeCallback } ;
+    }),
+    'fullscreenchange': ['fullscreenchange', 'mozfullscreenchange', 'webkitfullscreenchange', 'MSFullscreenChange', 'msfullscreenchange'].map(function(type) {
+      return { type: type, test: testFullScreenEventTypeCallback } ;
+    }),
+    'fullscreenerror': ['fullscreenerror', 'mozfullscreenerror', 'webkitfullscreenerror', 'MSFullscreenError', 'msfullscreenerror'].map(function(type) {
+      return { type: type, test: testFullScreenEventTypeCallback } ;
     })
   };
 
   [
     'pointerlockchange', 'pointerlockerror',
-    'fullscreenchange', 'fullscreenerror',
     'animationstart', 'animationiteration', 'animationend',
     'pointercancel', 'pointerdown', 'pointerhover', 'pointermove', 'pointerout', 'pointerover', 'pointerup'
   ].forEach(function(type) {
@@ -47,6 +68,7 @@
   });
 
 
+
   var polyfillEventTypesName = function(type, target) {
     var eventTypesPolyfiller = eventTypes[type];
     if(eventTypesPolyfiller === void 0) {
@@ -54,7 +76,8 @@
     } else {
       var i = 0;
       for(; i < eventTypesPolyfiller.length; i++) {
-        if(eventTypesPolyfiller[i].test(target, type)) {
+        if(eventTypesPolyfiller[i].test(target, eventTypesPolyfiller[i].type)) {
+          console.log('use' + eventTypesPolyfiller[i].type);
           return eventTypesPolyfiller[i].type;
         }
       }
@@ -460,7 +483,6 @@
 
         var vendorArguments = {};
 
-
         vendorArguments.type = formattedArguments.options.polyfill ?
           polyfillEventTypesName(formattedArguments.type, this) :
           formattedArguments.type
@@ -538,26 +560,4 @@
     polyfillListenerConstructor(Window);
   }
 
-
-  // var div = document.createElement('div');
-  // document.body.innerHTML = '';
-  // document.body.appendChild(div);
-  // div.style.height = '500px';
-  // div.style.background = 'red';
-  //
-  // var cb = function(event) {
-  //   console.log('click', event);
-  // };
-  //
-  // div.addEventListener('click', cb, { passive: true, once: true, capture: false });
-  // div.removeEventListener('click', cb, false);
-  // div.addEventListener('click', cb, { passive: true, once: true, capture: true });
-  //
-  // div.addEventListener('wheel', function(event) {
-  //   console.log('wheeliiing', event);
-  // }, { once: true });
-  //
-  // document.addEventListener('pointerlockchange', function(event) {
-  //   console.log('pointerlockchange', event);
-  // });
 })();
