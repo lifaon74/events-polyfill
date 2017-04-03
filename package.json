@@ -1,6 +1,6 @@
 {
   "name": "events-polyfill",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "description": "Polyfill event : EventListener, EventTarget, CustomEvent, MouseEvent, KeyboardEvent",
   "main": "event-constructor-polyfill.js",
   "scripts": {
