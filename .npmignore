@@ -13,6 +13,7 @@ npm-debug.log
 !*.metadata.json
 make.js
 .npmrc
+tests/
 
 #################
 ## JetBrains
