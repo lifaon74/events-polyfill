@@ -77,7 +77,7 @@
       var i = 0;
       for(; i < eventTypesPolyfiller.length; i++) {
         if(eventTypesPolyfiller[i].test(target, eventTypesPolyfiller[i].type)) {
-          console.log('use' + eventTypesPolyfiller[i].type);
+          // console.log('use : ' + eventTypesPolyfiller[i].type);
           return eventTypesPolyfiller[i].type;
         }
       }
