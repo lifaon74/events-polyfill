@@ -79,6 +79,22 @@ test.describe('Events polyfill', function() {
       `);
     });
 
+    test.it('Test FocusEvent', () => {
+      return tester.executeAsyncScript(driver, `
+        window.addEventListener('FocusEvent', function(event) {
+          if(event.relatedTarget === document.body ) {
+            resolve();
+          } else {
+            reject(new Error('Invalid relatedTarget property'));
+          }
+        });
+
+        window.dispatchEvent(new FocusEvent('FocusEvent', {
+          relatedTarget: document.body 
+        }));
+      `);
+    });
+
     test.it('Test Once', () => {
       return tester.executeAsyncScript(driver, `
         var count = 0;

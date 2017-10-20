@@ -1,7 +1,7 @@
 {
   "name": "events-polyfill",
-  "version": "1.1.9",
-  "description": "Polyfill event : EventListener, EventTarget, CustomEvent, MouseEvent, KeyboardEvent",
+  "version": "1.1.10",
+  "description": "Polyfill event : EventListener, EventTarget, CustomEvent, MouseEvent, KeyboardEvent, FocusEvent",
   "main": "event-constructor-polyfill.js",
   "scripts": {
     "start": "npm run min.listener && npm run min.constructor",
