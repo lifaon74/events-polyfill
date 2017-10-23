@@ -8,7 +8,9 @@ npm i events-polyfill --save
 ```
 
 #### event-constructor-polyfill.js
-Polyfill for : [CustomEvent](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent),
+Polyfill for :
+[Event](https://developer.mozilla.org/en-US/docs/Web/API/Event),
+[CustomEvent](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent),
 [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent),
 [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent),
 [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent)
