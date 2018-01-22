@@ -7,7 +7,8 @@
     "start": "npm run min.listener && npm run min.constructor",
     "min.listener": "uglifyjs event-listener-polyfill.js --stats -m -o event-listener-polyfill.min.js",
     "min.constructor": "uglifyjs event-constructor-polyfill.js --stats -m -o event-constructor-polyfill.min.js",
-    "test": "mocha ./tests/test.js",
+    "test.old": "mocha ./tests/testOld/test.js",
+    "test": "node ./tests/test.js",
     "serve": "http-server  ./"
   },
   "repository": {
@@ -17,9 +18,9 @@
   "author": "valentin",
   "license": "MIT",
   "devDependencies": {
-    "http-server": "^0.9.0",
-    "mocha": "^3.2.0",
-    "selenium-webdriver": "^3.3.0",
-    "uglify-js": "^2.7.5"
+    "http-server": "^0.10.0",
+    "mocha": "^3.4.2",
+    "selenium-webdriver": "^4.0.0-alpha.1",
+    "uglify-js": "^3.0.14"
   }
 }
