@@ -1,4 +1,4 @@
-import * as $webdriver from 'selenium-webdriver'
+import * as $webdriver from 'selenium-webdriver';
 
 export type DriverBrowser = 'chrome' | 'firefox' | 'opera' | 'ie' | 'edge';
 

@@ -4,56 +4,18 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "./classes/Driver", "./classes/Async"], factory);
+        define(["require", "exports", "selenium-webdriver", "./classes/Driver", "./classes/Async", "./classes/Tester"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    const $webdriver = require("selenium-webdriver");
     const Driver_1 = require("./classes/Driver");
     const Async_1 = require("./classes/Async");
-    class Tester {
-        constructor(remoteUrl) {
-            this.remoteUrl = remoteUrl;
-        }
-        runForMany(browsers, callback) {
-            return Promise.all(browsers.map((browser) => this.runFor(browser, callback))).then(() => { });
-        }
-        runFor(browser, callback) {
-            const driver = Driver_1.Driver.create(browser, this.remoteUrl);
-            return new Promise((resolve) => {
-                resolve(callback(driver));
-            })
-                .then(() => {
-                return driver.quit();
-            }, (error) => {
-                return driver.quit()
-                    .then(() => Promise.reject(error));
-            });
-        }
-        test(testName, callback) {
-            return new Promise((resolve, reject) => {
-                this.log(`Starting test '${testName}'`, 33);
-                resolve(callback());
-            })
-                .then(() => {
-                this.log(`test '${testName}' succeed`, 32);
-            }, (error) => {
-                this.log(`test '${testName}' failed`, 31);
-                console.log(error);
-                throw error;
-            });
-        }
-        log(content, color) {
-            console.log(this.colorString(content, color));
-        }
-        colorString(content, color = 0) {
-            return `\x1b[${color}m${content}\x1b[0m`;
-        }
-    }
-    exports.Tester = Tester;
+    const Tester_1 = require("./classes/Tester");
     (function example() {
         const config = require('./config.json');
-        const tester = new Tester(config.testServer);
+        const tester = new Tester_1.Tester(config.testServer);
         return tester.runForMany([
             // Driver.EDGE,
             // Driver.CHROME,
@@ -125,6 +87,91 @@
         window.dispatchEvent(new FocusEvent('FocusEvent', {
           relatedTarget: document.body 
         }));
+      `);
+            });
+            await tester.test('Test Once', () => {
+                return driver.executeAsyncScript(`
+        var count = 0;
+        window.addEventListener('once', function(event) {
+          count++;
+          if(count === 1) {
+            setTimeout(resolve, 1000);
+          } else {
+            reject(new Error('Invalid count => once triggered more than once'));
+          }
+        }, { once: true });
+
+        for(var i = 0; i < 10; i++) {
+          window.dispatchEvent(new CustomEvent('once'));
+        }
+      `);
+            });
+            // await tester.test('Test Passive', () =>  {
+            //   return driver.executeAsyncScript(`
+            //     window.addEventListener('scroll', function(event) {
+            //       try {
+            //         event.preventDefault();
+            //       } catch(error) {
+            //         resolve();
+            //         return;
+            //       }
+            //
+            //        reject(new Error('preventDefault inside passive should fail'));
+            //     }, { passive: true });
+            //
+            //     document.body.style.height = '4000px';
+            //     window.scroll(100, 100);
+            //   `);
+            // });
+            //
+            // await tester.test('Test KeyboardEvent code', async () =>  {
+            //   await driver.executeScript(`
+            //     window.KeyboardEventCodeReceived = null;
+            //     document.body.tabIndex = 0;
+            //     document.body.addEventListener('keydown', function(event) {
+            //       window.KeyboardEventCodeReceived = event;
+            //     });
+            //   `);
+            //
+            //   await driver.driver.wait($webdriver.until.elementLocated($webdriver.By.css('body')));
+            //   await driver.driver.findElement($webdriver.By.css('body')).sendKeys('a');
+            //
+            //   return driver.executeScript(`
+            //     if(!window.KeyboardEventCodeReceived) {
+            //       throw new Error('KeyboardEvent not received');
+            //     }
+            //
+            //     if(window.KeyboardEventCodeReceived.code !== 'KeyA') {
+            //       throw new Error('Invalid code : ' + window.KeyboardEventCodeReceived.code);
+            //     }
+            //   `);
+            // });
+            await tester.test('Test FullScreen', async () => {
+                await driver.executeScript(`
+        window.FullScreenEventReceived = null;
+        document.body.style.height = '4000px';
+        document.body.style.background = 'blue';
+        document.body.requestFullscreen = document.body.requestFullscreen ||
+        document.body.msRequestFullscreen ||
+        document.body.mozRequestFullscreen ||
+        document.body.webkitRequestFullscreen;
+        
+        document.addEventListener('fullscreenchange', function(event) {
+          window.FullScreenEventReceived = event;
+          document.getElementById('content').style.background = 'green';
+        });
+        
+        document.body.addEventListener('click', function(event) {
+          document.getElementById('content').style.background = 'red';
+          document.body.requestFullscreen();
+        });
+      `);
+                await driver.driver.wait($webdriver.until.elementLocated($webdriver.By.css('body')));
+                await driver.driver.findElement($webdriver.By.css('body')).click();
+                return driver.executeScript(`
+        if(!window.FullScreenEventReceived) {
+          throw new Error('PointerDownEvent not received');
+        }
       `);
             });
         });

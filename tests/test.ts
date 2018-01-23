@@ -1,56 +1,8 @@
-import { Driver, DriverBrowser } from './classes/Driver';
+import * as $webdriver from 'selenium-webdriver';
+
+import { Driver } from './classes/Driver';
 import { Async } from './classes/Async';
-
-export class Tester {
-
-
-  public remoteUrl: string;
-
-  constructor(remoteUrl: string) {
-    this.remoteUrl = remoteUrl;
-  }
-
-  runForMany(browsers: DriverBrowser[], callback: (driver: Driver) => Promise<any>): Promise<void> {
-    return Promise.all(
-      browsers.map((browser: DriverBrowser) => this.runFor(browser, callback))
-    ).then(() => {});
-  }
-
-  runFor(browser: DriverBrowser, callback: (driver: Driver) => Promise<any>): Promise<void> {
-    const driver: Driver = Driver.create(browser, this.remoteUrl);
-    return new Promise<void>((resolve: any) => {
-      resolve(callback(driver));
-    })
-      .then(() => {
-        return driver.quit();
-      }, (error: any) => {
-        return driver.quit()
-          .then(() => Promise.reject(error));
-      });
-  }
-
-  test(testName: string, callback: () => Promise<void>): Promise<void> {
-    return new Promise<void>((resolve: any, reject: any) => {
-      this.log(`Starting test '${testName}'`, 33);
-      resolve(callback());
-    })
-      .then(() => {
-        this.log(`test '${testName}' succeed`, 32);
-      },(error: any) => {
-        this.log(`test '${testName}' failed`, 31);
-        console.log(error);
-        throw error;
-      });
-  }
-
-  protected log(content: string, color?: number): void {
-    console.log(this.colorString(content, color));
-  }
-
-  protected colorString(content: string, color: number = 0): string {
-    return `\x1b[${color}m${content}\x1b[0m`;
-  }
-}
+import { Tester } from './classes/Tester';
 
 
 (function example() {
@@ -137,6 +89,97 @@ export class Tester {
         }));
       `);
     });
+
+    await tester.test('Test Once', () =>  {
+      return driver.executeAsyncScript(`
+        var count = 0;
+        window.addEventListener('once', function(event) {
+          count++;
+          if(count === 1) {
+            setTimeout(resolve, 1000);
+          } else {
+            reject(new Error('Invalid count => once triggered more than once'));
+          }
+        }, { once: true });
+
+        for(var i = 0; i < 10; i++) {
+          window.dispatchEvent(new CustomEvent('once'));
+        }
+      `);
+    });
+
+    // await tester.test('Test Passive', () =>  {
+    //   return driver.executeAsyncScript(`
+    //     window.addEventListener('scroll', function(event) {
+    //       try {
+    //         event.preventDefault();
+    //       } catch(error) {
+    //         resolve();
+    //         return;
+    //       }
+    //
+    //        reject(new Error('preventDefault inside passive should fail'));
+    //     }, { passive: true });
+    //
+    //     document.body.style.height = '4000px';
+    //     window.scroll(100, 100);
+    //   `);
+    // });
+    //
+    // await tester.test('Test KeyboardEvent code', async () =>  {
+    //   await driver.executeScript(`
+    //     window.KeyboardEventCodeReceived = null;
+    //     document.body.tabIndex = 0;
+    //     document.body.addEventListener('keydown', function(event) {
+    //       window.KeyboardEventCodeReceived = event;
+    //     });
+    //   `);
+    //
+    //   await driver.driver.wait($webdriver.until.elementLocated($webdriver.By.css('body')));
+    //   await driver.driver.findElement($webdriver.By.css('body')).sendKeys('a');
+    //
+    //   return driver.executeScript(`
+    //     if(!window.KeyboardEventCodeReceived) {
+    //       throw new Error('KeyboardEvent not received');
+    //     }
+    //
+    //     if(window.KeyboardEventCodeReceived.code !== 'KeyA') {
+    //       throw new Error('Invalid code : ' + window.KeyboardEventCodeReceived.code);
+    //     }
+    //   `);
+    // });
+
+    await tester.test('Test FullScreen', async () =>  {
+      await driver.executeScript(`
+        window.FullScreenEventReceived = null;
+        document.body.style.height = '4000px';
+        document.body.style.background = 'blue';
+        document.body.requestFullscreen = document.body.requestFullscreen ||
+        document.body.msRequestFullscreen ||
+        document.body.mozRequestFullscreen ||
+        document.body.webkitRequestFullscreen;
+        
+        document.addEventListener('fullscreenchange', function(event) {
+          window.FullScreenEventReceived = event;
+          document.getElementById('content').style.background = 'green';
+        });
+        
+        document.body.addEventListener('click', function(event) {
+          document.getElementById('content').style.background = 'red';
+          document.body.requestFullscreen();
+        });
+      `);
+
+      await driver.driver.wait($webdriver.until.elementLocated($webdriver.By.css('body')));
+      await driver.driver.findElement($webdriver.By.css('body')).click();
+
+      return driver.executeScript(`
+        if(!window.FullScreenEventReceived) {
+          throw new Error('PointerDownEvent not received');
+        }
+      `);
+    });
+
   });
 
 })();
