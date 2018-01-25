@@ -42,7 +42,7 @@
 
       this.interceptAll({
         add: function(normalizedArguments) {
-          console.log('intercepted', normalizedArguments);
+          // console.log('intercepted', normalizedArguments);
 
           var once = normalizedArguments.options.once && !_this.supportedOptions.once;
           var passive = normalizedArguments.options.passive && !_this.supportedOptions.passive;

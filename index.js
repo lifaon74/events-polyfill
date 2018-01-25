@@ -180,7 +180,7 @@ module.exports = (function() {
           }
         }
 
-        console.log('normalizedArguments', normalizedArguments.polyfilled);
+        // console.log('normalizedArguments', normalizedArguments.polyfilled);
 
         _this.registerEventListener(this, normalizedArguments);
 
@@ -389,7 +389,7 @@ module.exports = (function() {
 
       this.interceptAll({
         add: function(normalizedArguments) {
-          console.log('intercepted', normalizedArguments);
+          // console.log('intercepted', normalizedArguments);
 
           var once = normalizedArguments.options.once && !_this.supportedOptions.once;
           var passive = normalizedArguments.options.passive && !_this.supportedOptions.passive;

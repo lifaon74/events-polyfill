@@ -179,7 +179,7 @@ module.exports = (function() {
           }
         }
 
-        console.log('normalizedArguments', normalizedArguments.polyfilled);
+        // console.log('normalizedArguments', normalizedArguments.polyfilled);
 
         _this.registerEventListener(this, normalizedArguments);
 
