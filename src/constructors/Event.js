@@ -7,7 +7,7 @@
   try {
     var event = new window.Event('event', { bubbles: true, cancelable: true });
   } catch(error) {
-    var EventOriginal = window.CustomEvent || window.Event;
+    var EventOriginal = window.Event;
     var Event = function(eventName, params) {
       params = params || {};
       var event = document.createEvent('Event');

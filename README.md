@@ -20,6 +20,7 @@ Polyfill for :
 [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent),
 [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent),
 [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent)
+[PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent)
 
 #### src/ListenerOptions.js
 Polyfill for the `options` argument of :

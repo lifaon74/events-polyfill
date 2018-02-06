@@ -77,7 +77,7 @@ import { Tester } from './classes/Tester';
     await tester.test('Test FocusEvent', () =>  {
       return driver.executeAsyncScript(`
         window.addEventListener('FocusEvent', function(event) {
-          if(event.relatedTarget === document.body ) {
+          if(event.relatedTarget === document.body) {
             resolve();
           } else {
             reject(new Error('Invalid relatedTarget property'));
@@ -89,6 +89,33 @@ import { Tester } from './classes/Tester';
         }));
       `);
     });
+
+    await tester.test('Test PointerEvent', () =>  {
+      return driver.executeAsyncScript(`
+        window.addEventListener('PointerEvent', function(event) {
+          if(event.width !== 10) {
+            return reject(new Error('Invalid width property'));
+          }
+          
+          if(event.isPrimary !== true) {
+            return reject(new Error('Invalid isPrimary property'));
+          }
+          
+          if(event.twist !== 180) {
+            return reject(new Error('Invalid twist property'));
+          }
+          
+          resolve();
+        });
+
+        window.dispatchEvent(new PointerEvent('PointerEvent', {
+          width: 10,
+          isPrimary: true,
+          twist: 180
+        }));
+      `);
+    });
+
 
     await tester.test('Test Once', () =>  {
       return driver.executeAsyncScript(`
@@ -125,7 +152,7 @@ import { Tester } from './classes/Tester';
     //     window.scroll(100, 100);
     //   `);
     // });
-    //
+
     // await tester.test('Test KeyboardEvent code', async () =>  {
     //   await driver.executeScript(`
     //     window.KeyboardEventCodeReceived = null;

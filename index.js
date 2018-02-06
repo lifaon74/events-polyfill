@@ -469,7 +469,7 @@ module.exports = (function() {
   try {
     var event = new window.Event('event', { bubbles: true, cancelable: true });
   } catch(error) {
-    var EventOriginal = window.CustomEvent || window.Event;
+    var EventOriginal = window.Event;
     var Event = function(eventName, params) {
       params = params || {};
       var event = document.createEvent('Event');
@@ -623,14 +623,86 @@ module.exports = (function() {
   }
 })();
 },{}],9:[function(require,module,exports){
+(function() {
+  /**
+   * Polyfill PointerEvent
+   *  - pointerId ✓
+   *  - width ✓
+   *  - height ✓
+   *  - pressure ✓
+   *  - tangentialPressure ✓
+   *  - tiltX ✓
+   *  - tiltY ✓
+   *  - twist ✓
+   *  - pointerType ✓
+   *  - isPrimary ✓
+   */
+  try {
+    var event = new window.PointerEvent('event', { bubbles: true, cancelable: true });
+  } catch (error) {
+    var PointerEventOriginal = window.PointerEvent || window.Event;
+    var PointerEvent = function(eventName, params) {
+      params = params || {};
+      var event = document.createEvent('PointerEvent');
+
+      // https://msdn.microsoft.com/en-us/library/jj192039(v=vs.85).aspx
+      event.initPointerEvent(
+        eventName,
+        (params.bubbles === void 0) ? false : params.bubbles,
+        (params.cancelable === void 0) ? false : params.cancelable,
+        (params.view === void 0) ? window : params.view,
+        (params.detail === void 0) ? 0 : params.detail,
+        (params.screenX === void 0) ? 0 : params.screenX,
+        (params.screenY === void 0) ? 0 : params.screenY,
+        (params.clientX === void 0) ? 0 : params.clientX,
+        (params.clientY === void 0) ? 0 : params.clientY,
+        (params.ctrlKey === void 0) ? false : params.ctrlKey,
+        (params.altKey === void 0) ? false : params.altKey,
+        (params.shiftKey === void 0) ? false : params.shiftKey,
+        (params.metaKey === void 0) ? false : params.metaKey,
+        (params.button === void 0) ? 0 : params.button,
+        (params.relatedTarget === void 0) ? null : params.relatedTarget,
+
+        (params.offsetX  === void 0) ? 0 : params.offsetX,
+        (params.offsetY  === void 0) ? 0 : params.offsetY,
+        (params.width === void 0) ? 1 : params.width,
+        (params.height === void 0) ? 1 : params.height,
+        (params.pressure === void 0) ? 0 : params.pressure,
+        (params.twist === void 0) ? 0 : params.twist,
+        (params.tiltX === void 0) ? 0 : params.tiltX,
+        (params.tiltY === void 0) ? 0 : params.tiltY,
+        (params.pointerId === void 0) ? 0 : params.pointerId,
+        (params.pointerType === void 0) ? '' : params.pointerType,
+        (params.hwTimestamp === void 0) ? 0 : params.hwTimestamp,
+        (params.isPrimary === void 0) ? false : params.isPrimary
+      );
+
+      event.tangentialPressure = (params.tangentialPressure === void 0) ? 0 : params.tangentialPressure;
+
+      return event;
+    };
+
+    PointerEvent.prototype = PointerEventOriginal.prototype;
+
+    Object.defineProperty(
+      PointerEvent.prototype,
+      'twist',
+      Object.getOwnPropertyDescriptor(PointerEvent.prototype, 'rotation')
+    );
+
+    window.PointerEvent = PointerEvent;
+  }
+})();
+},{}],10:[function(require,module,exports){
 require('./Event.js');
 require('./CustomEvent.js');
 require('./MouseEvent.js');
 require('./KeyboardEvent.js');
 require('./FocusEvent.js');
-},{"./CustomEvent.js":4,"./Event.js":5,"./FocusEvent.js":6,"./KeyboardEvent.js":7,"./MouseEvent.js":8}],10:[function(require,module,exports){
+require('./PointerEvent.js');
+},{"./CustomEvent.js":4,"./Event.js":5,"./FocusEvent.js":6,"./KeyboardEvent.js":7,"./MouseEvent.js":8,"./PointerEvent.js":9}],11:[function(require,module,exports){
 require('./constructors/index.js');
 require('./ListenerOptions.js');
 require('./ListenerEventTypes.js');
 
-},{"./ListenerEventTypes.js":2,"./ListenerOptions.js":3,"./constructors/index.js":9}]},{},[10]);
+},{"./ListenerEventTypes.js":2,"./ListenerOptions.js":3,"./constructors/index.js":10}]},{},[11]);
