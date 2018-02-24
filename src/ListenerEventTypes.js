@@ -8,7 +8,7 @@
   };
 
   EventListenerInterceptor.isSupportedTransitionEvent = function(target, type) {
-    return EventListenerInterceptor.isSupportedOnEvent(target, type) || (target.style['transition'] !== void 0);
+    return EventListenerInterceptor.isSupportedOnEvent(target, type) || (('style' in target) && (target.style['transition'] !== void 0));
   };
 
   EventListenerInterceptor.isSupportedFullScreenEvent = function(target, type) {
