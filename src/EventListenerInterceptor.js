@@ -237,5 +237,10 @@ module.exports = (function() {
   };
 
 
+  EventListenerInterceptor.error = function(error) {
+    // throw error;
+    console.error(error);
+  };
+
   return EventListenerInterceptor;
 })();

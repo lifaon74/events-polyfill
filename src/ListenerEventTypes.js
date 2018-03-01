@@ -80,7 +80,7 @@
         }
       }
 
-      throw new Error('Event listener type ' + String(type) + ' on ' + String(target) + ' is not supported by current environment');
+      this.error(new Error('Event listener type ' + String(type) + ' on ' + String(target) + ' is not supported by current environment'));
     }
   };
 

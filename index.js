@@ -238,6 +238,11 @@ module.exports = (function() {
   };
 
 
+  EventListenerInterceptor.error = function(error) {
+    // throw error;
+    console.error(error);
+  };
+
   return EventListenerInterceptor;
 })();
 },{}],2:[function(require,module,exports){
@@ -323,7 +328,7 @@ module.exports = (function() {
         }
       }
 
-      throw new Error('Event listener type ' + String(type) + ' on ' + String(target) + ' is not supported by current environment');
+      this.error(new Error('Event listener type ' + String(type) + ' on ' + String(target) + ' is not supported by current environment'));
     }
   };
 
