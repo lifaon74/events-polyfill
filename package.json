@@ -1,6 +1,6 @@
 {
   "name": "events-polyfill",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "description": "Polyfill event : EventListener, EventTarget, Event, CustomEvent, MouseEvent, KeyboardEvent, FocusEvent, PointerEvent and add support for options (like 'once')",
   "main": "index.js",
   "scripts": {

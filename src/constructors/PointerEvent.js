@@ -60,7 +60,7 @@
     PointerEvent.prototype = PointerEventOriginal.prototype;
 
     var rotationDescriptor = Object.getOwnPropertyDescriptor(PointerEvent.prototype, 'rotation');
-    if (rotationDescriptior) {
+    if (rotationDescriptor) {
       Object.defineProperty(PointerEvent.prototype, 'twist', rotationDescriptor);
     }
 
