@@ -20,7 +20,6 @@
   "devDependencies": {
     "browserify": "latest",
     "http-server": "latest",
-    "mocha": "^3.4.2",
     "selenium-webdriver": "^4.0.0-alpha.1",
     "uglify-js": "latest"
   }
