@@ -1,4 +1,4 @@
-(function() {
+(function(ApplyThisPrototype) {
   // ✓, ✗
 
   /**
@@ -17,9 +17,10 @@
         (params.cancelable === void 0) ? false : params.cancelable,
         (params.detail === void 0) ? {} : params.detail
       );
+      ApplyThisPrototype(event, this);
       return event;
     };
     Event.prototype = EventOriginal.prototype;
     window.Event = Event;
   }
-})();
+})(require('./ApplyThisPrototype.js'));

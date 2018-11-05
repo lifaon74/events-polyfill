@@ -1,4 +1,4 @@
-(function() {
+(function(ApplyThisPrototype) {
   /**
    * Polyfill CustomEvent
    */
@@ -15,9 +15,10 @@
         (params.cancelable === void 0) ? false : params.cancelable,
         (params.detail === void 0) ? {} : params.detail
       );
+      ApplyThisPrototype(event, this);
       return event;
     };
     CustomEvent.prototype = CustomEventOriginal.prototype;
     window.CustomEvent = CustomEvent;
   }
-})();
+})(require('./ApplyThisPrototype.js'));

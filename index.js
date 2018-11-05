@@ -442,7 +442,32 @@ module.exports = (function() {
 
 })(require('./EventListenerInterceptor.js'));
 },{"./EventListenerInterceptor.js":1}],4:[function(require,module,exports){
-(function() {
+module.exports = (function() {
+  return function ApplyThisPrototype(event, target) {
+    if ((typeof target === 'object') && (target !== null)) {
+      var proto = Object.getPrototypeOf(target);
+      var property;
+
+      for (property in proto) {
+        if (!(property in event)) {
+          var descriptor = Object.getOwnPropertyDescriptor(proto, property);
+          if (descriptor) {
+            Object.defineProperty(event, property, descriptor);
+          }
+        }
+      }
+
+      for (property in target) {
+        if (!(property in event)) {
+          event[property] = target[property];
+        }
+      }
+    }
+  }
+})();
+
+},{}],5:[function(require,module,exports){
+(function(ApplyThisPrototype) {
   /**
    * Polyfill CustomEvent
    */
@@ -459,14 +484,15 @@ module.exports = (function() {
         (params.cancelable === void 0) ? false : params.cancelable,
         (params.detail === void 0) ? {} : params.detail
       );
+      ApplyThisPrototype(event, this);
       return event;
     };
     CustomEvent.prototype = CustomEventOriginal.prototype;
     window.CustomEvent = CustomEvent;
   }
-})();
-},{}],5:[function(require,module,exports){
-(function() {
+})(require('./ApplyThisPrototype.js'));
+},{"./ApplyThisPrototype.js":4}],6:[function(require,module,exports){
+(function(ApplyThisPrototype) {
   // ✓, ✗
 
   /**
@@ -485,14 +511,15 @@ module.exports = (function() {
         (params.cancelable === void 0) ? false : params.cancelable,
         (params.detail === void 0) ? {} : params.detail
       );
+      ApplyThisPrototype(event, this);
       return event;
     };
     Event.prototype = EventOriginal.prototype;
     window.Event = Event;
   }
-})();
-},{}],6:[function(require,module,exports){
-(function() {
+})(require('./ApplyThisPrototype.js'));
+},{"./ApplyThisPrototype.js":4}],7:[function(require,module,exports){
+(function(ApplyThisPrototype) {
   /**
    * Polyfill FocusEvent : https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent
    *  - relatedTarget ✓
@@ -515,14 +542,16 @@ module.exports = (function() {
         (params.relatedTarget === void 0) ? null : params.relatedTarget
       );
 
+      ApplyThisPrototype(event, this);
+
       return event;
     };
     FocusEvent.prototype = FocusEventOriginal.prototype;
     window.FocusEvent = FocusEvent;
   }
-})();
-},{}],7:[function(require,module,exports){
-(function() {
+})(require('./ApplyThisPrototype.js'));
+},{"./ApplyThisPrototype.js":4}],8:[function(require,module,exports){
+(function(ApplyThisPrototype) {
   /**
    * Polyfill KeyboardEvent : https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent
    *  - key ✓
@@ -569,15 +598,17 @@ module.exports = (function() {
       event.char      = (params.charCode === void 0) ? '' : params.charCode;
       event.which     = (params.which === void 0) ? 0 : params.which;
 
+      ApplyThisPrototype(event, this);
+
       return event;
     };
     KeyboardEvent.prototype = KeyboardEventOriginal.prototype;
     window.KeyboardEvent = KeyboardEvent;
   }
 
-})();
-},{}],8:[function(require,module,exports){
-(function() {
+})(require('./ApplyThisPrototype.js'));
+},{"./ApplyThisPrototype.js":4}],9:[function(require,module,exports){
+(function(ApplyThisPrototype) {
   /**
    * Polyfill MouseEvent : https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent
    *  - screenX ✓
@@ -622,14 +653,16 @@ module.exports = (function() {
       event.buttons = (params.buttons === void 0) ? 0 : params.buttons;
       event.region  = (params.region === void 0) ? null : params.region;
 
+      ApplyThisPrototype(event, this);
+
       return event;
     };
     MouseEvent.prototype = MouseEventOriginal.prototype;
     window.MouseEvent = MouseEvent;
   }
-})();
-},{}],9:[function(require,module,exports){
-(function() {
+})(require('./ApplyThisPrototype.js'));
+},{"./ApplyThisPrototype.js":4}],10:[function(require,module,exports){
+(function(ApplyThisPrototype) {
   /**
    * Polyfill PointerEvent
    *  - pointerId ✓
@@ -685,6 +718,8 @@ module.exports = (function() {
 
       event.tangentialPressure = (params.tangentialPressure === void 0) ? 0 : params.tangentialPressure;
 
+      ApplyThisPrototype(event, this);
+
       return event;
     };
 
@@ -697,17 +732,17 @@ module.exports = (function() {
 
     window.PointerEvent = PointerEvent;
   }
-})();
-},{}],10:[function(require,module,exports){
+})(require('./ApplyThisPrototype.js'));
+},{"./ApplyThisPrototype.js":4}],11:[function(require,module,exports){
 require('./Event.js');
 require('./CustomEvent.js');
 require('./MouseEvent.js');
 require('./KeyboardEvent.js');
 require('./FocusEvent.js');
 require('./PointerEvent.js');
-},{"./CustomEvent.js":4,"./Event.js":5,"./FocusEvent.js":6,"./KeyboardEvent.js":7,"./MouseEvent.js":8,"./PointerEvent.js":9}],11:[function(require,module,exports){
+},{"./CustomEvent.js":5,"./Event.js":6,"./FocusEvent.js":7,"./KeyboardEvent.js":8,"./MouseEvent.js":9,"./PointerEvent.js":10}],12:[function(require,module,exports){
 require('./constructors/index.js');
 require('./ListenerOptions.js');
 require('./ListenerEventTypes.js');
 
-},{"./ListenerEventTypes.js":2,"./ListenerOptions.js":3,"./constructors/index.js":10}]},{},[11]);
+},{"./ListenerEventTypes.js":2,"./ListenerOptions.js":3,"./constructors/index.js":11}]},{},[12]);

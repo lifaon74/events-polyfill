@@ -1,4 +1,4 @@
-(function() {
+(function(ApplyThisPrototype) {
   /**
    * Polyfill KeyboardEvent : https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent
    *  - key ✓
@@ -45,10 +45,12 @@
       event.char      = (params.charCode === void 0) ? '' : params.charCode;
       event.which     = (params.which === void 0) ? 0 : params.which;
 
+      ApplyThisPrototype(event, this);
+
       return event;
     };
     KeyboardEvent.prototype = KeyboardEventOriginal.prototype;
     window.KeyboardEvent = KeyboardEvent;
   }
 
-})();
+})(require('./ApplyThisPrototype.js'));

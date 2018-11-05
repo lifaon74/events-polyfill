@@ -1,4 +1,4 @@
-(function() {
+(function(ApplyThisPrototype) {
   /**
    * Polyfill PointerEvent
    *  - pointerId ✓
@@ -54,6 +54,8 @@
 
       event.tangentialPressure = (params.tangentialPressure === void 0) ? 0 : params.tangentialPressure;
 
+      ApplyThisPrototype(event, this);
+
       return event;
     };
 
@@ -66,4 +68,4 @@
 
     window.PointerEvent = PointerEvent;
   }
-})();
+})(require('./ApplyThisPrototype.js'));

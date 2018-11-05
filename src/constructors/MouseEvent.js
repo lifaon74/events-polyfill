@@ -1,4 +1,4 @@
-(function() {
+(function(ApplyThisPrototype) {
   /**
    * Polyfill MouseEvent : https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent
    *  - screenX ✓
@@ -43,9 +43,11 @@
       event.buttons = (params.buttons === void 0) ? 0 : params.buttons;
       event.region  = (params.region === void 0) ? null : params.region;
 
+      ApplyThisPrototype(event, this);
+
       return event;
     };
     MouseEvent.prototype = MouseEventOriginal.prototype;
     window.MouseEvent = MouseEvent;
   }
-})();
+})(require('./ApplyThisPrototype.js'));

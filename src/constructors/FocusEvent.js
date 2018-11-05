@@ -1,4 +1,4 @@
-(function() {
+(function(ApplyThisPrototype) {
   /**
    * Polyfill FocusEvent : https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent
    *  - relatedTarget ✓
@@ -21,9 +21,11 @@
         (params.relatedTarget === void 0) ? null : params.relatedTarget
       );
 
+      ApplyThisPrototype(event, this);
+
       return event;
     };
     FocusEvent.prototype = FocusEventOriginal.prototype;
     window.FocusEvent = FocusEvent;
   }
-})();
+})(require('./ApplyThisPrototype.js'));
