@@ -94,11 +94,13 @@ module.exports = (function() {
   };
 
   EventListenerInterceptor.normalizeListenerOptions = function(options) {
-    switch(typeof options) {
+    var type = options === null ? 'null' : typeof options;
+    switch(type) {
       case 'boolean':
         options = { capture: options };
         break;
       case 'undefined':
+      case 'null':
         options = { capture: false };
         break;
       case 'object':
