@@ -10,8 +10,8 @@ import { Tester } from './classes/Tester';
   const tester = new Tester(config.testServer);
 
   return tester.runForMany([
-    // Driver.EDGE,
-    // Driver.CHROME,
+    Driver.EDGE,
+    Driver.CHROME,
     // Driver.FIREFOX,
     // Driver.OPERA,
     Driver.IE
@@ -101,9 +101,9 @@ import { Tester } from './classes/Tester';
             return reject(new Error('Invalid isPrimary property'));
           }
           
-          if(event.twist !== 180) {
+          /*if(event.twist !== 180) {
             return reject(new Error('Invalid twist property'));
-          }
+          }*/
           
           resolve();
         });
@@ -132,6 +132,16 @@ import { Tester } from './classes/Tester';
         for(var i = 0; i < 10; i++) {
           window.dispatchEvent(new CustomEvent('once'));
         }
+      `);
+    });
+
+    await tester.test('Test null third argument to addEventListener', () =>  {
+      return driver.executeAsyncScript(`
+        var count = 0;
+        window.addEventListener('test-third-event', function(event) {
+          resolve();
+        }, null);
+        window.dispatchEvent(new CustomEvent('test-third-event'));
       `);
     });
 

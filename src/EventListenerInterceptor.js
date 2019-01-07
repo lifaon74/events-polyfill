@@ -102,6 +102,9 @@ module.exports = (function() {
         options = { capture: false };
         break;
       case 'object':
+        if (options === null) {
+          options = { capture: false };
+        }
         break;
       default:
         throw new Error('Unsupported options type for addEventListener');

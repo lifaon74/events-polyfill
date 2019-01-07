@@ -1,6 +1,6 @@
 {
   "name": "events-polyfill",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Polyfill event : EventListener, EventTarget, Event, CustomEvent, MouseEvent, KeyboardEvent, FocusEvent, PointerEvent and add support for options (like 'once')",
   "main": "index.js",
   "scripts": {
@@ -18,7 +18,8 @@
   "author": "valentin",
   "license": "MIT",
   "devDependencies": {
-    "browserify": "latest",
+    "@types/node": "^10.12.18",
+    "browserify": "^16.2.3",
     "http-server": "latest",
     "selenium-webdriver": "^4.0.0-alpha.1",
     "uglify-js": "latest"
