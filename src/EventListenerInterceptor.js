@@ -81,15 +81,17 @@ module.exports = (function() {
 
 
   EventListenerInterceptor.normalizeListenerCallback = function(listener) {
-    if(typeof listener === 'function') {
-      return listener;
-    } else if((typeof listener === 'object') && (typeof listener.handleEvent === 'function')) {
-      return listener.handleEvent;
-    } else {
-      // to support Symbol
-      return function(event) {
-        listener(event);
-      };
+    if (!listener) {
+      if(typeof listener === 'function') {
+        return listener;
+      } else if((typeof listener === 'object') && (typeof listener.handleEvent === 'function')) {
+        return listener.handleEvent;
+      } else {
+        // to support Symbol
+        return function(event) {
+          listener(event);
+        };
+      }
     }
   };
 
