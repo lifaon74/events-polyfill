@@ -81,7 +81,7 @@ module.exports = (function() {
 
 
   EventListenerInterceptor.normalizeListenerCallback = function(listener) {
-    if(typeof listener === 'function') {
+    if((typeof listener === 'function') || (listener === null) || (listener === void 0)) {
       return listener;
     } else if((typeof listener === 'object') && (typeof listener.handleEvent === 'function')) {
       return listener.handleEvent;
